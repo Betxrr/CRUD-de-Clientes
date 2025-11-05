@@ -1,70 +1,61 @@
 # Projeto: CRUD de Clientes (React + TypeScript + Tailwind)
 
-Projeto de estudo focado em construir um sistema de CRUD (Create, Read, Update, Delete) para um cadastro de clientes, utilizando React, TypeScript, Tailwind CSS e boas práticas de desenvolvimento front-end.
+Projeto de estudo focado em construir um sistema de CRUD (Create, Read, Update, Delete) para um cadastro de clientes, utilizando React com TypeScript, Tailwind CSS e um fluxo de desenvolvimento incremental(YAGNI).
 
 ## 🎯 Objetivo
 
-Praticar e demonstrar habilidades em React com TypeScript, gerenciamento de estado (via services), manipulação de formulários com validação robusta (React Hook Form + Zod) e estilização eficiente com Tailwind CSS.
+Praticar e demonstrar habilidades em React com TypeScript, focando em um fluxo de desenvolvimento incremental, componentização, gerenciamento de estado e estilização eficiente com Tailwind CSS.
 
 ---
 
 ## ⚙️ Tecnologias Principais
 
 * **React:** Biblioteca principal para a UI.
-* **TypeScript:** Para tipagem estática e segurança.
+* **TypeScript:** Para tipagem estática (introduzido gradualmente).
 * **Vite:** Build tool e servidor de desenvolvimento.
 * **Tailwind CSS:** Estilização utility-first.
 * **React Router Dom:** Gerenciamento de rotas.
-* **React Hook Form:** Gerenciamento de formulários.
-* **Zod:** Validação de schemas e inferência de tipos.
-* **React Icons:** Biblioteca de ícones.
+* **React Hook Form:** Gerenciamento de formulários (etapa futura).
+* **Zod:** Validação de schemas (etapa futura).
 
 ---
 
 ## ✨ Funcionalidades Planejadas
 
 * Listagem de Clientes (Read)
-* Paginação na Listagem
 * Criação de Cliente (Create)
 * Edição de Cliente (Update)
 * Exclusão de Cliente (Delete)
-* Validação de Formulário (com Zod)
-* Feedback visual para o usuário (loading, sucesso, erro)
+* Validação de Formulário
+* Navegação entre páginas
 
 ---
 
-## 🚀 Roadmap de Desenvolvimento
+## 🚀 Roadmap de Desenvolvimento (Incremental)
 
-### Fase 1: Setup e Configuração
--   [X] Criação do projeto com Vite (React + TS).
--   [X] Instalação e configuração do Tailwind CSS.
--   [X] Instalação das dependências (`react-router-dom`, `react-hook-form`, `zod`, `@hookform/resolvers`, `react-icons`).
--   [X] Criação da estrutura inicial de pastas.
+### Fase 1: Configuração Base
+- [X] Criação do projeto com Vite (React + TS).
+- [X] Instalação e configuração do Tailwind CSS.
+- [X] Instalação das dependências (`react-router-dom`, etc.).
+- [X] Configuração do Roteador (`main.tsx`) e Estilos Globais (`index.css`).
 
-### Fase 2: Definição do Modelo e Mock
--   [ ] Definir a interface `IClient` em `types/client.d.ts`.
--   [ ] Definir o `clientSchema` de validação em `lib/zodSchemas.ts`.
--   [ ] Implementar o "Backend Falso" (`clientService.ts`) com dados mock e funções CRUD básicas (sem delay por enquanto).
+### Fase 2: UI (Front-End Primeiro)
+- [ ] Criar `ClientListPage.tsx` com **dados mockados** locais (em `src/pages`).
+- [ ] Estilizar a lista e botões com Tailwind.
+- [ ] Configurar a rota `/clientes` e o redirecionamento `/` no `App.tsx`.
+- [ ] Criar `ClientFormPage.tsx` (para "Novo" e "Editar").
+- [ ] Ligar as páginas com `Link` do React Router e `useNavigate`.
 
-### Fase 3: Navegação e Layout Básico
--   [ ] Configurar as rotas no `router/index.tsx` (`/`, `/clientes`, `/clientes/novo`, `/clientes/editar/:id`).
--   [ ] Integrar o Router no `App.tsx`.
--   [ ] Criar um componente de Layout básico (ex: `Navbar.tsx`) se necessário.
+### Fase 3: Lógica e Refatoração (Quando Necessário)
+- [ ] Implementar a lógica de Create, Update e Delete (ainda com mocks, usando `useState`).
+- [ ] Centralizar o estado (ex: Context API) *apenas se* o "prop drilling" se tornar um problema (passando por 3+ níveis).
+- [ ] Definir os tipos (ex: `IClient` em `src/types`) *apenas quando* os dados começarem a ser compartilhados entre componentes.
+- [ ] Isolar Hooks customizados (ex: `useClients`) *apenas se* a lógica de estado se tornar complexa ou repetida.
 
-### Fase 4: Funcionalidades Principais (CRUD)
--   [ ] Criar componentes de UI reutilizáveis (ex: `Input.tsx`, `Button.tsx`).
--   [ ] **(Read):** Implementar a `ClientListPage.tsx` para buscar (do mock service) e exibir clientes em uma tabela simples com Tailwind.
--   [ ] **(Create):** Implementar a `ClientFormPage.tsx` com `react-hook-form` e `zod` para o cadastro, chamando `createClient` do mock service.
--   [ ] Adicionar links/botões na `ClientListPage.tsx` para navegar para `/clientes/novo`.
--   [ ] **(Delete):** Adicionar botão de "Excluir" na tabela que chama `deleteClient` do mock service e atualiza a lista.
--   [ ] **(Update):** Fazer a `ClientFormPage.tsx` carregar dados do cliente (usando `getClientById` do mock) quando acessada via `/clientes/editar/:id` e chamar `updateClient` ao salvar.
--   [ ] Adicionar botão de "Editar" na tabela que navega para `/clientes/editar/:id`.
-
-### Fase 5: Refinamentos (Opcional)
--   [ ] Adicionar feedback de loading/submitting.
--   [ ] Implementar paginação na `ClientListPage.tsx`.
--   [ ] Melhorar a estilização com Tailwind.
--   [ ] Adicionar simulação de delay (`setTimeout`) nas funções do `clientService.ts` para testar estados de loading.
+### Fase 4: Ferramentas e Integração (Por Úlimo)
+- [ ] Implementar `React Hook Form` no `ClientFormPage.tsx`.
+- [ ] Implementar `Zod` para validação de schema.
+- [ ] Isolar a lógica de dados (ex: `src/services/clientService.ts`) e conectar a uma API real.
 
 ---
 
@@ -74,9 +65,9 @@ Praticar e demonstrar habilidades em React com TypeScript, gerenciamento de esta
     ```bash
     git clone [URL_DO_SEU_REPOSITORIO]
     ```
-2.  Navegue até a pasta do projeto:
+2.  Navegue até a pasta `Front-end`:
     ```bash
-    cd crud-clientes-react-ts
+    cd [NOME_DA_PASTA_DO_PROJETO]/Front-end
     ```
 3.  Instale as dependências:
     ```bash
