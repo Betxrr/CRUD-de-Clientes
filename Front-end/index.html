@@ -1,13 +1,68 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>crud-de-clientes</title>
+    
+    <!-- SEO Meta Tags -->
+    <title>CRUD de Clientes - Painel de Gerenciamento</title>
+    <meta name="description" content="Sistema de gerenciamento de clientes com funcionalidades completas de CRUD (Criar, Ler, Atualizar, Deletar)" />
+    <meta name="keywords" content="crud, clientes, gerenciamento, react, typescript" />
+    <meta name="author" content=" ✨ Humberto Rodrigues" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="CRUD de Clientes - Painel de Gerenciamento" />
+    <meta property="og:description" content="Sistema de gerenciamento de clientes com funcionalidades completas de CRUD" />
+    <meta property="og:site_name" content="CRUD de Clientes" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="CRUD de Clientes - Painel de Gerenciamento" />
+    <meta name="twitter:description" content="Sistema de gerenciamento de clientes com funcionalidades completas de CRUD" />
+    
+    <!-- Security -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="DENY" />
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/vite.svg" />
+    
+    <!-- Theme -->
+    <meta name="theme-color" content="#0ea5e9" />
+    <meta name="color-scheme" content="dark light" />
+    
+    <!-- Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- Fallback para quando JavaScript está desabilitado -->
+    <noscript>
+      <div style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        text-align: center;
+        font-family: system-ui, -apple-system, sans-serif;
+        background-color: #18181b;
+        color: #f4f4f5;
+      ">
+        <h1 style="color: #0ea5e9; margin-bottom: 1rem;">CRUD de Clientes</h1>
+        <p style="margin-bottom: 0.5rem;">JavaScript é necessário para executar esta aplicação.</p>
+        <p>Por favor, habilite JavaScript no seu navegador e recarregue a página.</p>
+      </div>
+    </noscript>
+    
+    <!-- Container principal da aplicação React -->
+    <div id="root" aria-label="Aplicação CRUD de Clientes"></div>
+    
+    <!-- Script principal da aplicação -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

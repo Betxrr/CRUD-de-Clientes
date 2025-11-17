@@ -1,7 +1,9 @@
 /* src/index.css */
 @import "tailwindcss";
 
-
 body {
-  @apply bg-zinc-900 text-zinc-100 antialiased;
+  background-color: #18181b; /* zinc-900 */
+  color: #f4f4f5; /* zinc-100 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
