@@ -7,3 +7,30 @@ export const mockClients = [
 export const getClientById = (id: string) => {
   return mockClients.find(client => client.id === id);
 }
+
+// --- ADICIONAR DAQUI PARA BAIXO ---
+
+// Tipo auxiliar para os dados de entrada (sem ID)
+type ClientInput = {
+  name: string;
+  email: string;
+  phone?: string;
+};
+
+export const createClient = (data: ClientInput) => {
+  const newClient = {
+    id: crypto.randomUUID(),
+    ...data,
+  };
+  mockClients.push(newClient);
+  return newClient;
+};
+
+export const updateClient = (id: string, data: ClientInput) => {
+  const index = mockClients.findIndex(client => client.id === id);
+  if (index !== -1) {
+    mockClients[index] = { id, ...data };
+    return mockClients[index];
+  }
+  return null;
+}
