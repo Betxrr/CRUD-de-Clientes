@@ -1,9 +1,10 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getClientById } from "../data/db";
+import { getClientById, createClient, updateClient } from "../data/db";
 
 export function ClientFormPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const isEditing = !!id;
 
   // Estados para controlar os inputs
@@ -23,6 +24,34 @@ export function ClientFormPage() {
     }
   }, [id, isEditing]);
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const data = { name, email, phone };
+
+    // LOG 1: Ver o que o formulário capturou antes de enviar
+    console.group("Processando Formulário");
+    console.log("Dados capturados dos inputs:", data);
+
+    if (isEditing && id) {
+      console.log("Modo: EDIÇÃO (ID: " + id + ")");
+      const updatedClient = updateClient(id, data);
+      
+      // LOG 2: Ver o resultado da operação
+      console.log("✅ Cliente atualizado no banco:", updatedClient);
+    } else {
+      console.log("Modo: CRIAÇÃO");
+      const newClient = createClient(data);
+      
+      // LOG 3: Ver o novo cliente com o ID gerado
+      console.log("✅ Novo cliente criado:", newClient);
+    }
+
+    console.groupEnd(); // Fecha o grupo de logs para ficar organizado
+
+    navigate("/clientes");
+  };
+
   return (
     <div className="space-y-6">
       {/* --- CABEÇALHO --- */}
@@ -40,7 +69,10 @@ export function ClientFormPage() {
       </div>
 
       {/* --- CARD DO FORMULÁRIO --- */}
-      <form className="bg-zinc-800 p-8 rounded-md shadow-lg max-w-3xl mx-auto border border-zinc-700/50">
+      <form 
+        onSubmit={handleSubmit}
+        className="bg-zinc-800 p-8 rounded-md shadow-lg max-w-3xl mx-auto border border-zinc-700/50"
+      >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Campo: Nome (Ocupa as 2 colunas) */}
           <div className="md:col-span-2 space-y-2">
@@ -106,10 +138,6 @@ export function ClientFormPage() {
           <button
             type="submit"
             className="px-6 py-2.5 rounded-md bg-sky-500 hover:bg-sky-600 text-white text-sm font-medium shadow-md hover:shadow-lg transition"
-            onClick={(e) => {
-              e.preventDefault();
-              alert(`Simulando salvamento de: ${name}`);
-            }}
           >
             Salvar
           </button>
@@ -117,4 +145,9 @@ export function ClientFormPage() {
       </form>
     </div>
   );
+
+
+
 }
+
+

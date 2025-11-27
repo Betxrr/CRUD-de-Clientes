@@ -21,6 +21,7 @@ function App() {
           {/* Rota 1: /clientes */}
           <Route path="/clientes" element={<ClientListPage />} />
           <Route path="/clientes/novo" element={<ClientFormPage />} />
+          <Route path="/clientes/editar/:id" element={<ClientFormPage />} />
           {/* Rota 2: / (raiz) -> Redireciona para /clientes */}
           <Route path="/" element={<Navigate to="/clientes" replace />} />
         </Routes>
