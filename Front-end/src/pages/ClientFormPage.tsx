@@ -1,138 +1,98 @@
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { getClientById, createClient, updateClient } from "../data/db";
+import { useEffect } from "react";
+// 1. Importamos o hook da biblioteca
+import { useForm } from "react-hook-form"; 
+import { getClientById, createClient, updateClient, ClientInput } from "../data/db";
 
 export function ClientFormPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const isEditing = !!id;
+  const navigate = useNavigate();
 
-  // Estados para controlar os inputs
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  // 2. Inicializamos o useForm
+  // A tipagem <ClientInput> ajuda o autocomplete nos campos
+  const { register, handleSubmit, setValue, setFocus } = useForm<ClientInput>();
 
-  // Efeito para carregar os dados se estivermos editando
   useEffect(() => {
+    // Foca no campo nome assim que a tela abre (Usabilidade!)
+    setFocus("name");
+
     if (isEditing && id) {
       const client = getClientById(id);
       if (client) {
-        setName(client.name);
-        setEmail(client.email);
-        setPhone(client.phone || ""); // Fallback caso phone seja undefined
+        // 3. Preenchemos os campos automaticamente com setValue
+        setValue("name", client.name);
+        setValue("email", client.email);
+        setValue("phone", client.phone || "");
       }
     }
-  }, [id, isEditing]);
+  }, [id, isEditing, setValue, setFocus]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const data = { name, email, phone };
-
-    // LOG 1: Ver o que o formulário capturou antes de enviar
-    console.group("Processando Formulário");
-    console.log("Dados capturados dos inputs:", data);
-
+  // 4. Função que recebe os dados JÁ prontos do formulário
+  const onSubmit = (data: ClientInput) => {
     if (isEditing && id) {
-      console.log("Modo: EDIÇÃO (ID: " + id + ")");
-      const updatedClient = updateClient(id, data);
-      
-      // LOG 2: Ver o resultado da operação
-      console.log("✅ Cliente atualizado no banco:", updatedClient);
+      updateClient(id, data);
     } else {
-      console.log("Modo: CRIAÇÃO");
-      const newClient = createClient(data);
-      
-      // LOG 3: Ver o novo cliente com o ID gerado
-      console.log("✅ Novo cliente criado:", newClient);
+      createClient(data);
     }
-
-    console.groupEnd(); // Fecha o grupo de logs para ficar organizado
-
     navigate("/clientes");
   };
 
   return (
     <div className="space-y-6">
-      {/* --- CABEÇALHO --- */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold">
           {isEditing ? "Editar Cliente" : "Novo Cliente"}
         </h2>
-
-        <Link
-          to="/clientes"
-          className="text-zinc-400 hover:text-zinc-100 text-sm flex items-center gap-1"
-        >
+        <Link to="/clientes" className="text-zinc-400 hover:text-zinc-100 text-sm flex items-center gap-1">
           &larr; Voltar
         </Link>
       </div>
 
-      {/* --- CARD DO FORMULÁRIO --- */}
+      {/* 5. O handleSubmit do RHF envolve nossa função onSubmit */}
       <form 
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         className="bg-zinc-800 p-8 rounded-md shadow-lg max-w-3xl mx-auto border border-zinc-700/50"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Campo: Nome (Ocupa as 2 colunas) */}
+          
           <div className="md:col-span-2 space-y-2">
-            <label htmlFor="name" className="text-sm font-medium text-zinc-300">
-              Nome Completo
-            </label>
+            <label htmlFor="name" className="text-sm font-medium text-zinc-300">Nome Completo</label>
             <input
               type="text"
               id="name"
-              required // Adicionamos validação básica de HTML5
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              // 6. Registramos o input no RHF (substitui value/onChange)
+              {...register("name", { required: true })}
               className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-4 py-2.5 text-zinc-100 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition"
               placeholder="Ex: Humberto Rodrigues"
             />
           </div>
 
-          {/* Campo: E-mail */}
           <div className="space-y-2">
-            <label
-              htmlFor="email"
-              className="text-sm font-medium text-zinc-300"
-            >
-              E-mail
-            </label>
+            <label htmlFor="email" className="text-sm font-medium text-zinc-300">E-mail</label>
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email", { required: true })}
               className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-4 py-2.5 text-zinc-100 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition"
               placeholder="Ex: humberto@email.com"
             />
           </div>
 
-          {/* Campo: Telefone */}
           <div className="space-y-2">
-            <label
-              htmlFor="phone"
-              className="text-sm font-medium text-zinc-300"
-            >
-              Telefone
-            </label>
+            <label htmlFor="phone" className="text-sm font-medium text-zinc-300">Telefone</label>
             <input
               type="tel"
               id="phone"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              {...register("phone")}
               className="w-full bg-zinc-900 border border-zinc-700 rounded-md px-4 py-2.5 text-zinc-100 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition"
               placeholder="Ex: (47) 99999-9999"
             />
           </div>
         </div>
 
-        {/* --- RODAPÉ (BOTÕES) --- */}
         <div className="flex justify-end space-x-4 pt-8 mt-4 border-t border-zinc-700/50">
-          <Link
-            to="/clientes"
-            className="px-6 py-2.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-sm font-medium transition"
-          >
+          <Link to="/clientes" className="px-6 py-2.5 rounded-md bg-zinc-700 hover:bg-zinc-600 text-sm font-medium transition">
             Cancelar
           </Link>
           <button
@@ -145,9 +105,4 @@ export function ClientFormPage() {
       </form>
     </div>
   );
-
-
-
 }
-
-
