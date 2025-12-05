@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  // 1. IMPORTANTE: Habilita o modo manual via classe
+  // 1. Habilita o modo manual
   darkMode: 'class', 
   
   content: [
@@ -13,12 +13,12 @@ export default {
         'erp-green': {
           light: '#E8F5E9',
           DEFAULT: '#2E7D32',
-          dark: '#1B5E20', // Verde mais escuro para o modo noturno
+          dark: '#1B5E20', // Verde escuro para o modo noturno
         },
         'erp-gray': {
           header: '#F5F5F5',
           border: '#D4D4D4',
-          darkHeader: '#27272a', // Cinza escuro para cabeçalhos no dark mode
+          darkHeader: '#27272a', // Cinza escuro para cabeçalhos
           darkBorder: '#3f3f46', // Borda escura
         }
       }
