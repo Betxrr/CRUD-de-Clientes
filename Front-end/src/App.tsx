@@ -10,22 +10,16 @@ import { ClientFormPage } from './pages/ClientFormPage.tsx';
 
 function App() {
   return (
-    <div className="max-w-5xl mx-auto p-8">
-      <h1 className="text-4xl font-bold text-center mb-8 text-sky-400">
-        Painel de Clientes
-      </h1>
-
-      <main>
-        {/* 3. Configurar o "mapa" de rotas */}
-        <Routes>
-          {/* Rota 1: /clientes */}
-          <Route path="/clientes" element={<ClientListPage />} />
-          <Route path="/clientes/novo" element={<ClientFormPage />} />
-          <Route path="/clientes/editar/:id" element={<ClientFormPage />} />
-          {/* Rota 2: / (raiz) -> Redireciona para /clientes */}
-          <Route path="/" element={<Navigate to="/clientes" replace />} />
-        </Routes>
-      </main>
+    <div className="min-h-screen bg-background">
+      {/* 3. Configurar o "mapa" de rotas */}
+      <Routes>
+        {/* Rota 1: /clientes */}
+        <Route path="/clientes" element={<ClientListPage />} />
+        <Route path="/clientes/novo" element={<ClientFormPage />} />
+        <Route path="/clientes/editar/:id" element={<ClientFormPage />} />
+        {/* Rota 2: / (raiz) -> Redireciona para /clientes */}
+        <Route path="/" element={<Navigate to="/clientes" replace />} />
+      </Routes>
     </div>
   );
 }

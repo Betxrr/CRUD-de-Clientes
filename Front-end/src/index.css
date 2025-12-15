@@ -1,9 +1,116 @@
-/* src/index.css */
 @import "tailwindcss";
+@config "../tailwind.config.js";
+@custom-variant dark (&:where(.dark, .dark *));
 
-body {
-  background-color: #18181b; /* zinc-900 */
-  color: #f4f4f5; /* zinc-100 */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+
+    /* ✅ VERDE UNIFICADO (#1A9949) 
+       Hue: 142, Saturation: 71%, Lightness: 35%
+    */
+    --primary: 142 71% 35%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Variações */
+    --primary-light: 142 71% 45%; 
+    /* Truque: Deixei o Dark igual ao Primary para a folha ficar da mesma cor do fundo */
+    --primary-dark: 142 71% 35%; 
+
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 10%;
+
+    /* LARANJA (Accent) */
+    --accent: 25 95% 53%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 25 95% 45%;
+
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    --border: 0 0% 85%;
+    --input: 0 0% 100%;
+    --ring: 142 71% 35%; /* Ring acompanhando o verde novo */
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --table-header: 0 0% 96%;
+    --table-row: 0 0% 100%;
+    --table-row-alt: 142 30% 97%;
+    --table-border: 0 0% 90%;
+
+    --radius: 0rem;
+  }
+
+  .dark {
+    --background: 0 0% 5%;
+    --foreground: 0 0% 95%;
+
+    /* Verde no Modo Escuro (Mantive um pouco mais claro para contraste) */
+    --primary: 142 71% 40%;
+    --primary-foreground: 0 0% 100%;
+    --primary-light: 142 71% 50%;
+    --primary-dark: 142 71% 40%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 95%;
+
+    --accent: 25 95% 55%;
+    --accent-foreground: 0 0% 100%;
+    --accent-hover: 25 95% 48%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
+
+    --card: 0 0% 8%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 8%;
+    --popover-foreground: 0 0% 95%;
+
+    --border: 0 0% 20%;
+    --input: 0 0% 12%;
+    --ring: 142 71% 40%;
+
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 0 0% 100%;
+
+    --table-header: 0 0% 12%;
+    --table-row: 0 0% 8%;
+    --table-row-alt: 0 0% 10%;
+    --table-border: 0 0% 18%;
+  }
+}
+
+@layer components {
+  .input-search {
+    @apply w-full bg-background border border-border px-3 py-2 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary;
+  }
+  
+  .dark .input-search {
+    @apply bg-input;
+  }
+
+  .btn-accent {
+    @apply bg-accent text-accent-foreground px-4 py-2 text-sm font-semibold uppercase tracking-wide transition-colors shadow-sm flex items-center gap-2 cursor-pointer border-none hover:bg-accent-hover;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    margin: 0;
+    min-height: 100vh;
+  }
 }
