@@ -1,181 +1,149 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useForm, type SubmitHandler } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowLeft, Leaf } from "lucide-react"; 
-import { useEffect } from "react";
-
-// Importa o esquema e o tipo
-import { clientSchema, type ClientSchema } from "../schemas/clientSchema";
-
-// 🚨 CORREÇÕES AQUI: Usando os nomes exatos das funções do seu db.ts
-import { getClientById, createClient, updateClient } from "../data/db"; 
-
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft, Leaf } from 'lucide-react';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 export function ClientFormPage() {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
-  const isEditing = !!id;
-  const pageTitle = isEditing ? 'Editar Cliente' : 'Novo Cliente';
-  const pageSubtitle = isEditing ? `ID: ${id}` : 'Preencha os dados do novo cliente.';
-
-  // 1. CONFIGURAÇÃO PRINCIPAL DO FORMULÁRIO (Manter o RHF + Zod)
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors, isSubmitting },
-  } = useForm<ClientSchema>({
-    resolver: zodResolver(clientSchema),
-    defaultValues: {
-      name: '',
-      email: '',
-      phone: ''
-    }
+  
+  // Estado local do formulário
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    status: 'Ativo'
   });
 
-  // LÓGICA: Carregar dados para Edição
-  useEffect(() => {
-    if (isEditing && id) {
-      // ✅ CORRIGIDO: Usando getClientById
-      const client = getClientById(id); 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // MOCK: Fingimos que salvamos no banco
+    console.log("Cliente Salvo:", formData);
+    alert("Cliente cadastrado com sucesso! (Simulação)");
+    navigate('/clientes'); // Volta para a lista
+  };
 
-      if (client) {
-        setValue('name', client.name);
-        setValue('email', client.email);
-        setValue('phone', client.phone);
-      } else {
-        alert("Cliente não encontrado!");
-        navigate('/clientes');
-      }
-    }
-  }, [id, isEditing, setValue, navigate]);
-
-  // 2. FUNÇÃO DE ENVIO DE DADOS (LÓGICA)
-  const onSubmit: SubmitHandler<ClientSchema> = (data) => {
-    // ✅ CORRIGIDO: Lógica para decidir entre criar ou atualizar
-    if (isEditing && id) {
-        updateClient(id, data); //
-    } else {
-        createClient(data); //
-    }
-
-    const mode = isEditing ? 'Edição' : 'Criação';
-    alert(`${mode} bem-sucedida para o cliente: ${data.name}`);
-    
+  const handleCancel = () => {
     navigate('/clientes');
   };
 
   return (
     <div className="min-h-screen bg-background text-foreground antialiased">
-      
-      {/* === CABEÇALHO INTEGRADO (Estilo Lovable) === */}
+      {/* === CABEÇALHO INTEGRADO === */}
       <header className="bg-primary border-b-4 border-primary-dark px-8 py-6 shadow-md transition-colors duration-300">
         <div className="max-w-6xl mx-auto">
           
-          {/* Título do Sistema */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="bg-primary-dark p-2 transition-colors">
-              <Leaf className="text-primary-foreground h-6 w-6" />
+          {/* Topo: Logo, Título do Sistema e Botão de Tema */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="bg-primary-dark p-2 transition-colors">
+                <Leaf className="text-primary-foreground h-6 w-6" />
+              </div>
+              <h1 className="text-2xl font-bold text-primary-foreground tracking-tight uppercase">
+                CRUD de Clientes
+              </h1>
             </div>
-            <h1 className="text-2xl font-bold text-primary-foreground tracking-tight uppercase">
-              Sistema ERP
-            </h1>
+            <ThemeToggle />
           </div>
 
-          {/* Título da Página e Botão Voltar */}
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => navigate('/clientes')} 
-              className="flex items-center gap-2 text-primary-foreground hover:text-primary-light transition-colors"
-              title="Voltar para a Lista"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </button>
+          {/* Barra de Título da Página e Ações */}
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            
+            {/* Títulos da Página */}
             <div>
               <h2 className="text-xl font-semibold text-primary-foreground">
-                {pageTitle}
+                Novo Cliente
               </h2>
               <p className="text-sm text-primary-foreground/70">
-                {pageSubtitle}
+                Cadastre um novo cliente no sistema.
               </p>
             </div>
+
+            {/* Botão Voltar */}
+            <button
+              onClick={handleCancel}
+              className="flex items-center gap-2 text-primary-foreground hover:opacity-80 transition-opacity"
+            >
+              <ArrowLeft className="h-5 w-5" />
+              Voltar
+            </button>
           </div>
         </div>
       </header>
-      
-      {/* 🟢 CONTAINER PRINCIPAL DO FORMULÁRIO */}
-      <main className="max-w-xl mx-auto px-8 py-10">
-        
-        {/* === O FORMULÁRIO EM SI (Estilo de Card) === */}
-        <form 
-          onSubmit={handleSubmit(onSubmit)} 
-          className="bg-card p-8 shadow-2xl border border-border space-y-6"
-        >
-          
-          {/* Campo NOME */}
-          <div className="space-y-1">
-            <label htmlFor="name" className="block text-sm font-medium text-foreground">Nome Completo</label>
-            <input
-              id="name"
-              type="text"
-              {...register('name')}
-              className={`input-search w-full ${
-                errors.name 
-                  ? 'border-destructive focus:ring-destructive' 
-                  : 'focus:border-primary focus:ring-primary'
-              }`}
-            />
-            {errors.name && (
-              <p className="mt-1 text-sm text-destructive">{errors.name.message}</p>
-            )}
-          </div>
 
-          {/* Campo EMAIL */}
-          <div className="space-y-1">
-            <label htmlFor="email" className="block text-sm font-medium text-foreground">Email</label>
-            <input
-              id="email"
-              type="email"
-              {...register('email')}
-              className={`input-search w-full ${
-                errors.email 
-                  ? 'border-destructive focus:ring-destructive' 
-                  : 'focus:border-primary focus:ring-primary'
-              }`}
-            />
-            {errors.email && (
-              <p className="mt-1 text-sm text-destructive">{errors.email.message}</p>
-            )}
-          </div>
+      {/* === CONTEÚDO === */}
+      <main className="max-w-2xl mx-auto px-8 py-12">
+        <div className="bg-card border border-border rounded-lg shadow p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Nome */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Nome Completo</label>
+              <input 
+                required
+                type="text"
+                className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                value={formData.name}
+                onChange={e => setFormData({...formData, name: e.target.value})}
+                placeholder="Digite o nome do cliente"
+              />
+            </div>
 
-          {/* Campo TELEFONE */}
-          <div className="space-y-1">
-            <label htmlFor="phone" className="block text-sm font-medium text-foreground">Telefone</label>
-            <input
-              id="phone"
-              type="tel"
-              {...register('phone')}
-              className={`input-search w-full ${
-                errors.phone 
-                  ? 'border-destructive focus:ring-destructive' 
-                  : 'focus:border-primary focus:ring-primary'
-              }`}
-            />
-            {errors.phone && (
-              <p className="mt-1 text-sm text-destructive">{errors.phone.message}</p>
-            )}
-          </div>
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">E-mail</label>
+              <input 
+                required
+                type="email"
+                className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                value={formData.email}
+                onChange={e => setFormData({...formData, email: e.target.value})}
+                placeholder="exemplo@email.com"
+              />
+            </div>
 
-          {/* Botão de Submissão */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full btn-accent justify-center py-3 disabled:bg-muted disabled:text-muted-foreground"
-          >
-            {isSubmitting ? 'Salvando...' : (isEditing ? 'Salvar Edição' : 'Cadastrar Cliente')}
-          </button>
-        </form>
+            {/* Telefone e Status */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Telefone</label>
+                <input 
+                  type="text"
+                  placeholder="(00) 00000-0000"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  value={formData.phone}
+                  onChange={e => setFormData({...formData, phone: e.target.value})}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">Status</label>
+                <select 
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                  value={formData.status}
+                  onChange={e => setFormData({...formData, status: e.target.value})}
+                >
+                  <option value="Ativo">Ativo</option>
+                  <option value="Inativo">Inativo</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Botões */}
+            <div className="flex gap-3 pt-6">
+              <button 
+                type="submit" 
+                className="flex-1 bg-accent hover:bg-accent-hover text-accent-foreground font-bold py-3 px-4 rounded-lg transition-colors"
+              >
+                Salvar Cliente
+              </button>
+              <button 
+                type="button"
+                onClick={handleCancel}
+                className="flex-1 bg-muted hover:bg-muted/80 text-muted-foreground font-bold py-3 px-4 rounded-lg transition-colors"
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </div>
       </main>
     </div>
   );

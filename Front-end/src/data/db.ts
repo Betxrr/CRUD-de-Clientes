@@ -11,7 +11,7 @@ export type Client = {
 // Definição do tipo para entrada de dados (DTO), excluindo o ID gerado automaticamente
 export type ClientInput = {
   name: string;
-  email: string;
+  email: string;  
   phone?: string;
 };
 

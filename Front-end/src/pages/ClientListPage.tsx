@@ -1,62 +1,65 @@
-import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Plus, Leaf, Search } from "lucide-react";
-import { mockClients, deleteClient } from "../data/db"; // Assumindo db.ts existe
-import { ThemeToggle } from "../components/ThemeToggle"; // Reutilizando seu ThemeToggle
-
-// ⚠️ Usaremos o componente ClientTable separado (conforme você forneceu)
-// por ser grande e já estilizado, mas a lógica do Header/Search é integrada.
+import { Plus, Leaf, Search, LogOut } from "lucide-react";
+import { ThemeToggle } from "../components/ThemeToggle";
 import { ClientTable } from "../components/ClientTable"; 
 
-export function ClientListPage() {
-  const navigate = useNavigate();
-  const [clients, setClients] = useState(mockClients);
-  const [searchTerm, setSearchTerm] = useState('');
+// Importamos o Hook que acabamos de criar
+import { useClientList } from "../hooks/useClientList";
 
-  // 1. LÓGICA: Função de edição
+interface ClientListPageProps {
+  user: { id: number; name: string; email?: string };
+  onLogout: () => void;
+}
+
+export function ClientListPage({ user, onLogout }: ClientListPageProps) {
+  const navigate = useNavigate();
+
+  // 1. CLEAN ARCHITECTURE: Toda a lógica complexa (estado, filtro, delete) vem daqui
+  const { 
+    filteredClients, 
+    searchTerm, 
+    setSearchTerm, 
+    removeClient 
+  } = useClientList();
+
+  // Função simples de navegação (pode ficar aqui pois é puramente visual/rota)
   const handleEdit = (id: string) => {
     navigate(`/clientes/editar/${id}`);
   };
 
-  // 2. LÓGICA: Função de manipulação de dados de exclusão
-  const handleDelete = (id: string) => {
-    if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
-      const deleted = deleteClient(id);
-      if (deleted) {
-        setClients((currentClients) =>
-          currentClients.filter((client) => client.id !== id)
-        );
-      }
-    }
-  };
-
-  // 3. LÓGICA: Lógica de Filtragem (Front-End Primeiro)
-  const filteredClients = clients.filter(client =>
-    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  
   return (
-    // Usa classes semânticas: bg-background (branco/cinza claro) e text-foreground (preto/cinza escuro)
+    // Estrutura visual mantida conforme design original
     <div className="min-h-screen bg-background text-foreground antialiased">
       
-      {/* === CABEÇALHO INTEGRADO (Baseado no Lovable Header.tsx) === */}
+      {/* === CABEÇALHO INTEGRADO === */}
       <header className="bg-primary border-b-4 border-primary-dark px-8 py-6 shadow-md transition-colors duration-300">
         <div className="max-w-6xl mx-auto">
           
           {/* Topo: Logo, Título do Sistema e Botão de Tema */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              {/* Box do Ícone */}
               <div className="bg-primary-dark p-2 transition-colors">
                 <Leaf className="text-primary-foreground h-6 w-6" />
               </div>
-              {/* Título do Sistema */}
               <h1 className="text-2xl font-bold text-primary-foreground tracking-tight uppercase">
                 CRUD de Clientes
               </h1>
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-4">
+              <div className="text-right hidden md:block">
+                <p className="text-xs text-primary-foreground/70">Bem-vindo,</p>
+                <p className="text-sm font-semibold text-primary-foreground">{user?.name}</p>
+              </div>
+              <button
+                onClick={onLogout}
+                className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white py-2 px-3 rounded"
+                title="Sair"
+              >
+                <LogOut className="w-4 h-4 text-white" />
+                <span className="text-sm font-medium">Sair</span>
+              </button>
+              <ThemeToggle />
+            </div>
           </div>
 
           {/* Barra de Título da Página e Ações */}
@@ -79,18 +82,17 @@ export function ClientListPage() {
                 <input
                   type="text"
                   value={searchTerm}
+                  // O Hook controla o estado agora
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder="Pesquisar cliente..."
-                  // 💡 Usando a classe utilitária do Lovable
                   className="input-search pl-10 pr-3" 
                 />
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
               </div>
 
-              {/* Botão Novo (Laranja - Accent) */}
+              {/* Botão Novo */}
               <Link
                 to="/clientes/novo"
-                // 💡 Usando a classe utilitária do Lovable para o Botão Laranja
                 className="btn-accent" 
               >
                 <Plus className="h-4 w-4" /> Novo
@@ -107,7 +109,7 @@ export function ClientListPage() {
         <ClientTable 
           clients={filteredClients} 
           onEdit={handleEdit}
-          onDelete={handleDelete} 
+          onDelete={removeClient} 
         />
 
         <p className="text-xs text-muted-foreground mt-4 px-1">
