@@ -2,8 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Leaf } from 'lucide-react';
 import { ThemeToggle } from '../components/ThemeToggle';
+import type { User } from '../data/db';
 
-export function ClientFormPage() {
+interface ClientFormPageProps {
+  user?: User;
+  onLogout?: () => void;
+}
+
+export function ClientFormPage({}: ClientFormPageProps) {
   const navigate = useNavigate();
   
   // Estado local do formulário

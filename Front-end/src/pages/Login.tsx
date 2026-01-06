@@ -1,13 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Leaf } from 'lucide-react';
 import { USERS_MOCK } from '../mocks/dataMock';
 
-interface User {
-  id: number;
-  name: string;
-  email: string;
-}
+import type { User } from '../data/db';
 
 interface LoginProps {
   onLogin: (user: User) => void;

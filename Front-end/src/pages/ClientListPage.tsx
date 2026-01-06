@@ -5,9 +5,10 @@ import { ClientTable } from "../components/ClientTable";
 
 // Importamos o Hook que acabamos de criar
 import { useClientList } from "../hooks/useClientList";
+import type { User } from '../data/db';
 
 interface ClientListPageProps {
-  user: { id: number; name: string; email?: string };
+  user: User;
   onLogout: () => void;
 }
 

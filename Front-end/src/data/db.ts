@@ -1,58 +1,153 @@
-// src/data/db.ts
-
-// Definição do tipo Client para uso em toda a aplicação
-export type Client = {
+// Tipos que eu vou usar no sistema todo
+export type User = {
   id: string;
   name: string;
   email: string;
-  phone?: string;
+  password: string;
 };
 
-// Definição do tipo para entrada de dados (DTO), excluindo o ID gerado automaticamente
-export type ClientInput = {
+export type Client = {
+  id: string;
+  ownerId: string; // Aqui eu guardo o ID de quem criou esse cliente
   name: string;
-  email: string;  
+  email: string;
   phone?: string;
+  status: 'Ativo' | 'Inativo';
 };
 
-// Inicialização do banco de dados mockado
-export let mockClients: Client[] = [
-  { id: '1', name: 'Humberto Rodrigues', email: 'humberto@email.com', phone: '(47) 95001-5500' },
-  { id: '2', name: 'Cliente Exemplo 2', email: 'cliente2@email.com', phone: '(11) 98888-7777' },
-  { id: '3', name: 'Cliente Exemplo 3', email: 'cliente3@email.com', phone: '(21) 97777-6666' },
-];
+// Aqui eu defino as chaves pra salvar no LocalStorage do navegador
+const KEY_CLIENTS = 'app_clients_data';
+const KEY_USERS = 'app_users_data';
 
-// Recuperação de cliente por ID
+// Funçãozinha pra carregar dados sem ter que repetir código toda hora
+const loadData = <T>(key: string): T[] => {
+  const stored = localStorage.getItem(key);
+  return stored ? JSON.parse(stored) : [];
+};
+
+// Funçãozinha pra salvar os dados de volta no navegador
+const saveData = (key: string, data: any[]) => {
+  localStorage.setItem(key, JSON.stringify(data));
+};
+
+
+
+
+
+// ----------------
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                   BANCO DE USUARIO - LOGIN
+// \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+// ----------------
+
+
+
+
+
+// Aqui eu crio um usuário novo e verifico se o email já existe
+export const createUser = (name: string, email: string, password: string) => {
+  const users = loadData<User>(KEY_USERS);
+  
+  if (users.find(u => u.email === email)) {
+    throw new Error("Já existe uma conta com esse e-mail.");
+  }
+
+  const newUser: User = { 
+    id: crypto.randomUUID(), // Gera um ID único aleatório
+    name, 
+    email, 
+    password 
+  };
+  
+  users.push(newUser);
+  saveData(KEY_USERS, users);
+  return newUser;
+};
+
+// Aqui eu verifico se o email e senha batem pra fazer o login
+export const authenticateUser = (email: string, password: string) => {
+  const users = loadData<User>(KEY_USERS);
+  
+  // Deixei esse usuário de teste caso eu precise entrar rápido sem cadastro
+  if (email === 'demo@empresa.com' && password === '123') {
+    return { id: 'demo-id', name: 'Usuário Demo', email, password };
+  }
+
+  return users.find(u => u.email === email && u.password === password) || null;
+};
+
+
+
+
+
+// ----------------
+
+
+
+
+// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                   BANCO DE CLIENTES - CRUD
+// \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+// ----------------
+
+
+
+
+
+
+
+
+// Aqui eu busco SÓ os clientes do usuário que está logado (uso o userId pra filtrar)
+export const getClients = (userId: string) => {
+  const allClients = loadData<Client>(KEY_CLIENTS);
+  return allClients.filter(c => c.ownerId === userId);
+};
+
+// Busco um cliente específico pelo ID dele (pra editar depois)
 export const getClientById = (id: string) => {
-  return mockClients.find(client => client.id === id);
+  const allClients = loadData<Client>(KEY_CLIENTS);
+  return allClients.find(client => client.id === id);
 };
 
-// Criação de novo cliente com geração de UUID
-export const createClient = (data: ClientInput) => {
+// Crio um cliente novo e JÁ vinculo ele ao usuário logado (ownerId)
+export const createClient = (data: Omit<Client, 'id' | 'ownerId'>, userId: string) => {
+  const allClients = loadData<Client>(KEY_CLIENTS);
+  
   const newClient: Client = {
     id: crypto.randomUUID(),
+    ownerId: userId, // O segredo tá aqui: amarro o cliente ao dono
     ...data,
   };
-  mockClients.push(newClient);
+  
+  allClients.push(newClient);
+  saveData(KEY_CLIENTS, allClients);
   return newClient;
 };
 
-// Atualização de cliente existente preservando o ID
-export const updateClient = (id: string, data: ClientInput) => {
-  const index = mockClients.findIndex(client => client.id === id);
+// Atualizo os dados de um cliente existente
+export const updateClient = (id: string, data: Partial<Client>) => {
+  const allClients = loadData<Client>(KEY_CLIENTS);
+  const index = allClients.findIndex(c => c.id === id);
   
   if (index !== -1) {
-    mockClients[index] = { ...mockClients[index], ...data };
-    return mockClients[index];
+    allClients[index] = { ...allClients[index], ...data };
+    saveData(KEY_CLIENTS, allClients);
+    return allClients[index];
   }
   return null;
 };
 
-// Remoção de cliente do array
+// Deleto o cliente da lista e salvo de novo
 export const deleteClient = (id: string) => {
-  const index = mockClients.findIndex(client => client.id === id);
-  if (index !== -1) {
-    mockClients.splice(index, 1);
+  let allClients = loadData<Client>(KEY_CLIENTS);
+  const filtered = allClients.filter(c => c.id !== id);
+  
+  if (filtered.length < allClients.length) {
+    saveData(KEY_CLIENTS, filtered);
     return true;
   }
   return false;

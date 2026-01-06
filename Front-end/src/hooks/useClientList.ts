@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { mockClients, deleteClient, type Client } from "../data/db";
+import { deleteClient, type Client } from "../data/db";
+import { CLIENTS_MOCK } from "../mocks/clientsMock";
 
 export function useClientList() {
-  const [clients, setClients] = useState<Client[]>(mockClients);
+  const [clients, setClients] = useState<Client[]>(CLIENTS_MOCK as unknown as Client[]);
   const [searchTerm, setSearchTerm] = useState('');
 
   // Lógica de Exclusão
