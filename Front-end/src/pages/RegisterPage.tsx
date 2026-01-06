@@ -44,11 +44,6 @@ export function RegisterPage() {
         {/* Cabeçalho */}
         <div className="text-center mb-6">
           <div className="flex items-center justify-center gap-2 mb-2">
-            {/* Ícone da folha */}
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8 text-emerald-700">
-              <path fillRule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.352-.272-2.636-.759-3.807a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08l-.009-.008z" clipRule="evenodd" />
-              <path d="M12 2.25a.75.75 0 01.75.75v8.99l2.72 2.72a.75.75 0 11-1.06 1.06l-3.25-3.25a.75.75 0 01-.22-.53V3a.75.75 0 01.75-.75z" />
-            </svg>
             <h1 className="text-2xl font-extrabold text-emerald-700 uppercase tracking-tight">
               Novo Usuário
             </h1>

@@ -110,7 +110,7 @@ export function Login({ onLogin }: LoginProps) {
           <p className="text-sm">
             Não é cadastrado?{' '}
             <button
-              onClick={() => navigate('/clientes/novo')}
+              onClick={() => navigate('/register')}
               className="text-orange-600 font-semibold hover:underline"
             >
               Cadastre-se!
