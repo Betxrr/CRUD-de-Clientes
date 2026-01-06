@@ -20,42 +20,65 @@ Praticar e demonstrar habilidades em React com TypeScript, focando em um fluxo d
 
 ---
 
-## ✨ Funcionalidades Planejadas
+## ✨ Funcionalidades
 
-* Listagem de Clientes (Read)
-* Criação de Cliente (Create)
-* Edição de Cliente (Update)
-* Exclusão de Cliente (Delete)
-* Validação de Formulário
-* Navegação entre páginas
+### ✅ Implementadas
+- [x] Autenticação com usuário demo (`demo@empresa.com` / `123`)
+- [x] Listagem de Clientes (Read) com filtro de busca
+- [x] Criação de Cliente (Create) com persistência em `localStorage`
+- [x] Edição de Cliente (Update)
+- [x] Exclusão de Cliente (Delete)
+- [x] Navegação entre páginas (React Router)
+- [x] Seed automático de 3 clientes demo
+- [x] Design system Tailwind v4 (tema claro/escuro)
+- [x] Tipagem forte (TypeScript)
+- [x] Isolamento de lógica em hooks (`useClientList`)
+- [x] Persistência via `localStorage` (`src/data/db.ts`)
+
+### 📋 Backlog (Futuro)
+- [ ] Validação com React Hook Form + Zod
+- [ ] API backend (Node.js / Express)
+- [ ] Autenticação JWT
+- [ ] Paginação na tabela
+- [ ] Exportar dados (CSV/PDF)
+- [ ] Dashboard com gráficos
+- [ ] Notificações (toast)
+- [ ] Testes automatizados (Jest + React Testing Library)
+- [ ] Dark mode persistente
+- [ ] Integração com UI component library (Shadcn/ui)
+- [ ] Mobile responsivo otimizado
 
 ---
 
 ## 🚀 Roadmap de Desenvolvimento (Incremental)
 
-### Fase 1: Configuração Base
-- [X] Criação do projeto com Vite (React + TS).
-- [X] Instalação e configuração do Tailwind CSS.
-- [X] Instalação das dependências (`react-router-dom`, etc.).
-- [X] Configuração do Roteador (`main.tsx`) e Estilos Globais (`index.css`).
+### Fase 1: Configuração Base ✅
+- [x] Criação do projeto com Vite (React + TS).
+- [x] Instalação e configuração do Tailwind CSS.
+- [x] Instalação das dependências (`react-router-dom`, etc.).
+- [x] Configuração do Roteador (`main.tsx`) e Estilos Globais (`index.css`).
 
-### Fase 2: UI (Front-End Primeiro)
-- [ ] Criar `ClientListPage.tsx` com **dados mockados** locais (em `src/pages`).
-- [ ] Estilizar a lista e botões com Tailwind.
-- [ ] Configurar a rota `/clientes` e o redirecionamento `/` no `App.tsx`.
-- [ ] Criar `ClientFormPage.tsx` (para "Novo" e "Editar").
-- [ ] Ligar as páginas com `Link` do React Router e `useNavigate`.
+### Fase 2: UI (Front-End Primeiro) ✅
+- [x] Criar `ClientListPage.tsx` com **dados mockados** locais (em `src/pages`).
+- [x] Estilizar a lista e botões com Tailwind.
+- [x] Configurar as rotas (`/login`, `/dashboard`, `/clients/new`, `/clients/edit/:id`).
+- [x] Criar `ClientFormPage.tsx` (para "Novo" e "Editar").
+- [x] Ligar as páginas com `Link` do React Router e `useNavigate`.
+- [x] Criar página de `Login.tsx` com autenticação demo.
 
-### Fase 3: Lógica e Refatoração (Quando Necessário)
-- [ ] Implementar a lógica de Create, Update e Delete (ainda com mocks, usando `useState`).
-- [ ] Centralizar o estado (ex: Context API) *apenas se* o "prop drilling" se tornar um problema (passando por 3+ níveis).
-- [ ] Definir os tipos (ex: `IClient` em `src/types`) *apenas quando* os dados começarem a ser compartilhados entre componentes.
-- [ ] Isolar Hooks customizados (ex: `useClients`) *apenas se* a lógica de estado se tornar complexa ou repetida.
+### Fase 3: Lógica e Refatoração ✅
+- [x] Implementar a lógica de Create, Update e Delete (com mocks e `useState`).
+- [x] Centralizar estado com Context via `src/data/db.ts` (persistência `localStorage`).
+- [x] Definir tipos (`User`, `Client`) em `src/data/db.ts`.
+- [x] Isolar Hooks customizados (`useClientList`) com filtro e exclusão.
+- [x] Refatorar `App.tsx` para proteger rotas autenticadas.
 
-### Fase 4: Ferramentas e Integração (Por Úlimo)
+### Fase 4: Ferramentas e Integração (Futuro)
 - [ ] Implementar `React Hook Form` no `ClientFormPage.tsx`.
 - [ ] Implementar `Zod` para validação de schema.
-- [ ] Isolar a lógica de dados (ex: `src/services/clientService.ts`) e conectar a uma API real.
+- [ ] Isolar a lógica de dados em `src/services/clientService.ts`.
+- [ ] Conectar a uma API real (Node.js / Express).
+- [ ] Autenticação JWT.
 
 ---
 
