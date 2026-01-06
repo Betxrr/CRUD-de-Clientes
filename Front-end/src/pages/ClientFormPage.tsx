@@ -1,35 +1,65 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Leaf } from 'lucide-react';
 import { ThemeToggle } from '../components/ThemeToggle';
-import type { User } from '../data/db';
+import type { User, Client } from '../data/db';
+import { createClient, updateClient, getClientById } from '../data/db';
 
 interface ClientFormPageProps {
   user?: User;
   onLogout?: () => void;
 }
 
-export function ClientFormPage({}: ClientFormPageProps) {
+export function ClientFormPage({ user }: ClientFormPageProps) {
+  const { id } = useParams();
   const navigate = useNavigate();
-  
+
   // Estado local do formulário
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Partial<Client>>({
     name: '',
     email: '',
     phone: '',
     status: 'Ativo'
   });
 
+  useEffect(() => {
+    if (id) {
+      const client = getClientById(id);
+      if (client) setFormData(client);
+    }
+  }, [id]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // MOCK: Fingimos que salvamos no banco
-    console.log("Cliente Salvo:", formData);
-    alert("Cliente cadastrado com sucesso! (Simulação)");
-    navigate('/clientes'); // Volta para a lista
+    if (!user) {
+      alert('Usuário não autenticado.');
+      return;
+    }
+
+    if (id) {
+      // edição
+      const updated = updateClient(id, formData as Partial<Client>);
+      if (updated) {
+        alert('Cliente atualizado com sucesso!');
+      } else {
+        alert('Falha ao atualizar cliente.');
+      }
+    } else {
+      // criação
+      createClient({
+        name: formData.name || '',
+        email: formData.email || '',
+        phone: formData.phone || '',
+        status: (formData.status as Client['status']) || 'Ativo'
+      }, user.id);
+      alert('Cliente cadastrado com sucesso!');
+    }
+
+    navigate('/dashboard');
   };
 
   const handleCancel = () => {
-    navigate('/clientes');
+    navigate('/dashboard');
   };
 
   return (

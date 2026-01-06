@@ -30,6 +30,9 @@ const saveData = (key: string, data: any[]) => {
   localStorage.setItem(key, JSON.stringify(data));
 };
 
+// Importar mocks para forçar dados demo
+import { USERS_MOCK, CLIENTS_MOCK } from '../mocks/dataMock';
+
 
 
 
@@ -72,7 +75,15 @@ export const authenticateUser = (email: string, password: string) => {
   
   // Deixei esse usuário de teste caso eu precise entrar rápido sem cadastro
   if (email === 'demo@empresa.com' && password === '123') {
-    return { id: 'demo-id', name: 'Usuário Demo', email, password };
+    // Força os dados de demo (overwrite) para garantir comportamento determinístico
+    saveData(KEY_USERS, USERS_MOCK as any);
+    // Normaliza ownerId para o primeiro usuário de USERS_MOCK
+    const demoOwnerId = String(USERS_MOCK[0].id ?? '1');
+    const normalizedClients = (CLIENTS_MOCK || []).map(c => ({ ...c, ownerId: demoOwnerId }));
+    saveData(KEY_CLIENTS, normalizedClients as any);
+
+    // Retorna o usuário demo correspondente ao primeiro mock
+    return { id: demoOwnerId, name: USERS_MOCK[0].name, email, password };
   }
 
   return users.find(u => u.email === email && u.password === password) || null;

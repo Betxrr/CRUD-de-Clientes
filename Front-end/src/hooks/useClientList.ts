@@ -1,16 +1,25 @@
-import { useState } from "react";
-import { deleteClient, type Client } from "../data/db";
-import { CLIENTS_MOCK } from "../mocks/clientsMock";
+import { useEffect, useState } from "react";
+import { deleteClient, getClients, type Client } from "../data/db";
 
-export function useClientList() {
-  const [clients, setClients] = useState<Client[]>(CLIENTS_MOCK as unknown as Client[]);
+export function useClientList(userId: string | null) {
+  const [clients, setClients] = useState<Client[]>([]);
+
+  useEffect(() => {
+    if (!userId) {
+      setClients([]);
+      return;
+    }
+
+    const list = getClients(userId);
+    setClients(list);
+  }, [userId]);
   const [searchTerm, setSearchTerm] = useState('');
 
   // Lógica de Exclusão
   const removeClient = (id: string) => {
     if (window.confirm("Tem certeza que deseja excluir este cliente?")) {
       const wasDeleted = deleteClient(id);
-      
+
       if (wasDeleted) {
         setClients((current) => current.filter((client) => client.id !== id));
       }

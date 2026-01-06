@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { USERS_MOCK } from '../mocks/dataMock';
-
 import type { User } from '../data/db';
+import { authenticateUser } from '../data/db';
 
 interface LoginProps {
   onLogin: (user: User) => void;
@@ -19,7 +18,7 @@ export function Login({ onLogin }: LoginProps) {
     e.preventDefault();
     setError('');
 
-    const foundUser = USERS_MOCK.find(u => u.email === email && u.password === password);
+    const foundUser = authenticateUser(email, password);
 
     if (foundUser) {
       onLogin(foundUser as User);

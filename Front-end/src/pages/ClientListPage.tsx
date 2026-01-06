@@ -21,11 +21,11 @@ export function ClientListPage({ user, onLogout }: ClientListPageProps) {
     searchTerm, 
     setSearchTerm, 
     removeClient 
-  } = useClientList();
+  } = useClientList(user?.id ?? null);
 
   // Função simples de navegação (pode ficar aqui pois é puramente visual/rota)
   const handleEdit = (id: string) => {
-    navigate(`/clientes/editar/${id}`);
+    navigate(`/clients/edit/${id}`);
   };
 
   return (
@@ -93,7 +93,7 @@ export function ClientListPage({ user, onLogout }: ClientListPageProps) {
 
               {/* Botão Novo */}
               <Link
-                to="/clientes/novo"
+                to="/clients/new"
                 className="btn-accent" 
               >
                 <Plus className="h-4 w-4" /> Novo
