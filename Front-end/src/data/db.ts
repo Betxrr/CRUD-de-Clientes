@@ -26,7 +26,7 @@ const loadData = <T>(key: string): T[] => {
 };
 
 // Funçãozinha pra salvar os dados de volta no navegador
-const saveData = (key: string, data: any[]) => {
+const saveData = <T>(key: string, data: T[]) => {
   localStorage.setItem(key, JSON.stringify(data));
 };
 
@@ -76,11 +76,11 @@ export const authenticateUser = (email: string, password: string) => {
   // Deixei esse usuário de teste caso eu precise entrar rápido sem cadastro
   if (email === 'demo@empresa.com' && password === '123') {
     // Força os dados de demo (overwrite) para garantir comportamento determinístico
-    saveData(KEY_USERS, USERS_MOCK as any);
+    saveData(KEY_USERS, USERS_MOCK);
     // Normaliza ownerId para o primeiro usuário de USERS_MOCK
     const demoOwnerId = String(USERS_MOCK[0].id ?? '1');
     const normalizedClients = (CLIENTS_MOCK || []).map(c => ({ ...c, ownerId: demoOwnerId }));
-    saveData(KEY_CLIENTS, normalizedClients as any);
+    saveData(KEY_CLIENTS, normalizedClients);
 
     // Retorna o usuário demo correspondente ao primeiro mock
     return { id: demoOwnerId, name: USERS_MOCK[0].name, email, password };

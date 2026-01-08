@@ -30,7 +30,7 @@ export function RegisterPage() {
       createUser(formData.name, formData.email, formData.password);
       alert("Conta criada! Agora é só entrar.");
       navigate('/'); // Mando de volta pro Login
-    } catch (err: any) {
+    } catch (err: Error) {
       setError(err.message || "Deu erro ao criar conta.");
     }
   };
